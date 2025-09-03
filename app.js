@@ -31,12 +31,29 @@ app.get("/listings",async (req,res)=>{
     res.render("listings/index",{allListings}) ;
 })
 
+//New Route
+app.get("/listings/new" , async (req,res)=>{
+    res.render("listings/new");
+})
+
 //show route
 app.get("/listings/:id", async (req,res)=>{
-    let {_id} = req.params ;
-    const listing = await Listing.findById(_id) ;
+    let {id} = req.params ;
+    const listing = await Listing.findById(id) ;
     res.render("listings/show",{listing}) ;
 })
+
+//Create route
+app.post("/listings", async (req,res)=>{
+    // let {title,description,image,price,country,location} = req.body;
+    // let listing = req.body.listing;
+    // console.log(listing);
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect("/listings");
+
+} )
+
 
 
 // app.get("/testListing",async (req,res)=>{
