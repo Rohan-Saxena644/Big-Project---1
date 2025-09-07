@@ -16,3 +16,31 @@
 .nav-link{
     color: #222222 !important;
 }
+
+.f-info-links a{
+    text-decoration: none;
+    color:#222222;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+
+.f-info{
+    text-align: center;
+    display: flex;
+    height: 8rem;
+    background-color: #ebebeb;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+}
+
+.f-info-links{
+    width: 100% ;
+}
+
+.f-info-socials{
+    font-size: 1.3rem;
+    width: 100%;
+}
