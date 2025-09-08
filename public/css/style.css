@@ -36,11 +36,18 @@
     align-items: space-evenly;
 }
 
-.f-info-links{
+.f-info-links,.f-info-socials,.f-info-brand{
     width: 100% ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.f-info-socials{
+.f-info-socials i{
+    margin-right: 1rem;
+}
+
+.f-info-social{
     font-size: 1.3rem;
     width: 100%;
 }
