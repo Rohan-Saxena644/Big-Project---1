@@ -53,10 +53,13 @@ app.post("/listings", async (req,res)=>{
     // let {title,description,image,price,country,location} = req.body;
     // let listing = req.body.listing;
     // console.log(listing);
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect("/listings");
-
+    try{
+        const newListing = new Listing(req.body.listing);
+        await newListing.save();
+        res.redirect("/listings");
+    }catch(err){
+        next(err);
+    }
 } )
 
 //Edit route
@@ -85,7 +88,10 @@ app.delete("/listings/:id", async (req,res)=>{
 })                                                         
 
 
-
+//Error handling middleware
+app.use((err,req,res,next)=>{
+    res.send("Something went wrong");
+});
 
 
 
