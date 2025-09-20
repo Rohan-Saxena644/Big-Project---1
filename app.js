@@ -55,6 +55,9 @@ app.post("/listings", wrapAsync (async (req,res,next)=>{
     // let {title,description,image,price,country,location} = req.body;
     // let listing = req.body.listing;
     // console.log(listing);
+        if(!req.body.listing){
+            throw new ExpressError(400,"Send valid data for listing");
+        }
         const newListing = new Listing(req.body.listing);
         await newListing.save();
         res.redirect("/listings");
@@ -70,6 +73,9 @@ app.get("/listings/:id/edit",async(req,res)=>{
 
 //UPDATE ROUTE
 app.put("/listings/:id",async(req,res)=>{
+    if(!req.body.listing){
+        throw new ExpressError(400,"Send valid data for listing");
+    }
     let{id} = req.params;
     await Listing.findByIdAndUpdate(id,{...req.body.listing}); //HUMNE de construct kiy hai listing
     res.redirect(`/listings/${id}`);
@@ -119,5 +125,5 @@ app.use((err,req,res,next)=>{
 
 app.listen(8080,()=>{
     console.log("server is listening to port 8080") ;
-})
+});
 
