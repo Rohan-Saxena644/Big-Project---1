@@ -6,6 +6,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust" ;
 
@@ -25,7 +26,7 @@ app.set("views", path.join(__dirname,"views")) ;
 app.use(express.urlencoded({extended: true})) ;
 app.use(methodOverride("_method"));
 app.engine('ejs',ejsMate);
-app.use(express.static(path.join(__dirname,"/public")));
+app.use(express.static(path.join(__dirname,"public")));
 
 app.get("/",(req,res)=>{
     res.send("Hello,I am root") ;
@@ -72,7 +73,7 @@ app.put("/listings/:id",async(req,res)=>{
     let{id} = req.params;
     await Listing.findByIdAndUpdate(id,{...req.body.listing}); //HUMNE de construct kiy hai listing
     res.redirect(`/listings/${id}`);
-})                                                       //object ko jo humne name=listing[id]
+});                                                       //object ko jo humne name=listing[id]
                                                          //listing[description] naam rakhe the uski wajah se
 
 
@@ -82,12 +83,21 @@ app.delete("/listings/:id", async (req,res)=>{
     let{id} = req.params;
     await Listing.findByIdAndDelete(id);
     res.redirect("/listings");
-})                                                         
+});                                                         
 
+
+
+
+
+
+app.all("*",(req,res,next)=>{
+    next(new ExpressError(404,"Page not found"));
+})
 
 //Error handling middleware
 app.use((err,req,res,next)=>{
-    res.send("Something went wrong");
+    let {statusCode=500,message="Something went wrong"} = err;
+    res.status(statusCode).send(message);
 });
 
 
