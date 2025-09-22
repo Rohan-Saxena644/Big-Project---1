@@ -103,7 +103,8 @@ app.all("*",(req,res,next)=>{
 //Error handling middleware
 app.use((err,req,res,next)=>{
     let {statusCode=500,message="Something went wrong"} = err;
-    res.status(statusCode).send(message);
+    res.render("error.ejs",{message});
+    // res.status(statusCode).send(message);
 });
 
 
