@@ -33,6 +33,17 @@ app.get("/",(req,res)=>{
     res.send("Hello,I am root") ;
 })
 
+// middleware for schema validations
+const validateListing = (req,res,next) =>{
+    let {error} = listingSchema.validate(req.body);
+    if(error){
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400,errMsg);
+    }else{
+        next();
+    }
+}
+
 //Index Route
 app.get("/listings",async (req,res)=>{
     const allListings = await Listing.find({}) ;
@@ -52,20 +63,21 @@ app.get("/listings/:id", async (req,res)=>{
 })
 
 //Create route
-app.post("/listings", wrapAsync (async (req,res,next)=>{
+app.post("/listings",validateListing, wrapAsync (async (req,res,next)=>{
     // let {title,description,image,price,country,location} = req.body;
     // let listing = req.body.listing;
     // console.log(listing);
         // if(!req.body.listing){
         //     throw new ExpressError(400,"Send valid data for listing");
         // }
+        
+        //SCHEMA VALIDATIONS
+        // let result = listingSchema.validate(req.body);
+        // console.log(result);
 
-        let result = listingSchema.validate(req.body);
-        console.log(result);
-
-        if(result.error){
-            throw new ExpressError(400,result.error);
-        }
+        // if(result.error){
+        //     throw new ExpressError(400,result.error);
+        // }
 
         const newListing = new Listing(req.body.listing);
         // if(!newListing.title){
@@ -92,10 +104,11 @@ app.get("/listings/:id/edit",async(req,res)=>{
 
 
 //UPDATE ROUTE
-app.put("/listings/:id",async(req,res)=>{
-    if(!req.body.listing){
-        throw new ExpressError(400,"Send valid data for listing");
-    }
+app.put("/listings/:id", validateListing, async(req,res)=>{
+    // commenting because of validateListing function
+    // if(!req.body.listing){
+    //     throw new ExpressError(400,"Send valid data for listing");
+    // }
     let{id} = req.params;
     await Listing.findByIdAndUpdate(id,{...req.body.listing}); //HUMNE de construct kiy hai listing
     res.redirect(`/listings/${id}`);
