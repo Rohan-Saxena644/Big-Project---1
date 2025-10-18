@@ -10,6 +10,8 @@ const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema , reviewSchema } = require("./schema.js");
 const Review = require("./models/review.js");
 
+const listings = require("./routes/listing.js");
+
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust" ;
 
 main()
@@ -56,54 +58,8 @@ const validateReview = (req,res,next) =>{
     }
 }
 
-//Index Route
-app.get("/listings",async (req,res)=>{
-    const allListings = await Listing.find({}) ;
-    res.render("listings/index",{allListings}) ;
-})
 
-//New Route
-app.get("/listings/new" , async (req,res)=>{
-    res.render("listings/new");
-})
-
-//show route
-app.get("/listings/:id", async (req,res)=>{
-    let {id} = req.params ;
-    const listing = await Listing.findById(id).populate("reviews") ;
-    res.render("listings/show",{listing}) ;
-})
-
-//Create route
-app.post("/listings",validateListing, wrapAsync (async (req,res,next)=>{
-        const newListing = new Listing(req.body.listing);
-        await newListing.save();
-        res.redirect("/listings");
-} ));
-
-//Edit route
-app.get("/listings/:id/edit",async(req,res)=>{
-    let{id} = req.params;
-    const listing = await Listing.findById(id) ;
-    res.render("listings/edit.ejs",{listing}) ;
-})
-
-
-//UPDATE ROUTE
-app.put("/listings/:id", validateListing, async(req,res)=>{
-    let{id} = req.params;
-    await Listing.findByIdAndUpdate(id,{...req.body.listing}); 
-    res.redirect(`/listings/${id}`);
-});                                                     
-
-
-
-// DELETE ROUTE
-app.delete("/listings/:id", async (req,res)=>{
-    let{id} = req.params;
-    await Listing.findByIdAndDelete(id);
-    res.redirect("/listings");
-});
+app.use("/listings", listings);
 
 
 // Reviews
