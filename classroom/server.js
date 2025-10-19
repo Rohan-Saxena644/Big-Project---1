@@ -4,7 +4,17 @@ const users = require("./routes/user.js");
 const posts = require("./routes/post.js");
 const cookieParser = require("cookie-parser");
 
-app.use(cookieParser());
+app.use(cookieParser("secretcode"));
+
+app.get("/signedcookie" , (req,res)=>{
+    res.cookie("made-in" , "India" , {signed : true});
+    res.send("signed cookie sent");
+});
+
+app.get("/verify" , (req,res)=>{
+    console.log(req.signedCookies);
+    res.send("verified");
+}); // if the output on console is {} {key: false} then the signed cookie has been tempered with
 
 app.get("/getcookies",(req,res)=>{
     res.cookie("great" , "hello");
