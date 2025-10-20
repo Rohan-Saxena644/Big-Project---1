@@ -6,6 +6,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 
 const listings = require("./routes/listing.js");
@@ -44,12 +45,18 @@ const sessionOptions = {
 };
 
 app.use(session(sessionOptions));
+app.use(flash());
 
 
 app.get("/",(req,res)=>{
     res.send("Hello,I am root") ;
 })
 
+
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    next();
+});
 
 
 // listings router used
