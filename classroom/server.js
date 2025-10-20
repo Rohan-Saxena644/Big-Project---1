@@ -3,6 +3,7 @@ const app = express();
 const users = require("./routes/user.js");
 const posts = require("./routes/post.js");
 const session = require("express-session");
+const flash = require("connect-flash");
 // const cookieParser = require("cookie-parser");
 
 // app.use(cookieParser("secretcode"));
@@ -37,17 +38,34 @@ const session = require("express-session");
 // app.use("/posts",posts);
 
 
-app.use(session({secret: "mysupersecretstring" , resave: false , saveUninitialized: true}));
-
-app.get("/reqcount" , (req,res)=>{
-    if(req.session.count){
-        req.session.count++;
-    }else{
-        req.session.count = 1;
-    }
-
-    res.send(`You send a request ${req.session.count} times`);
+const sessionOptions = session({
+    secret: "mysupersecretstring",
+    resave: false,
+    saveUninitialized: true,
 });
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.get("/register" , (req,res)=>{
+    let {name = "anonymous"} = req.query ;
+    req.session.name = name ;
+    res.redirect("/hello");
+});
+
+app.get("/hello",(req,res)=>{
+    res.send(`hello, ${req.session.name}`);  // ek single session chal raha hai hence we can use this data everywhere form one route to other route
+});
+
+// app.get("/reqcount" , (req,res)=>{
+//     if(req.session.count){
+//         req.session.count++;
+//     }else{
+//         req.session.count = 1;
+//     }
+
+//     res.send(`You send a request ${req.session.count} times`);
+// });
 
 app.get("/test" , (req,res)=>{
     res.send("test successful!");
