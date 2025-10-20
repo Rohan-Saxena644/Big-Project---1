@@ -42,24 +42,36 @@ app.set("views", path.join(__dirname,"views")) ;
 // app.use("/posts",posts);
 
 
-const sessionOptions = session({
+const sessionOptions = {
     secret: "mysupersecretstring",
     resave: false,
     saveUninitialized: true,
-});
+};
 
 app.use(session(sessionOptions));
 app.use(flash());
 
+app.use((req,res,next)=>{
+    res.locals.successMsg = req.flash("success");
+    res.locals.errorMsg = req.flash("error");
+    next();
+});
+
 app.get("/register" , (req,res)=>{
     let {name = "anonymous"} = req.query ;
     req.session.name = name ;
-    req.flash("success","user registered successfully!");
+
+    if(name === "anonymous"){
+        req.flash("error","user not registered");
+    }else{
+        req.flash("success","user registered successfully!");
+    }
+
     res.redirect("/hello");
 });
 
 app.get("/hello",(req,res)=>{
-    res.render("page.ejs" , {name: req.session.name , msg: req.flash("success")});
+    res.render("page.ejs" , {name: req.session.name});
     // res.send(`hello, ${req.session.name}`);  // ek single session chal raha hai hence we can use this data everywhere form one route to other route
 });
 
