@@ -8,7 +8,7 @@ const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
-const localStrategy = require("passport-local");
+const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 
@@ -50,6 +50,16 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+// use static authenticate method of model in LocalStrategy
+passport.use(new LocalStrategy(User.authenticate()));
+
+// use static serialize and deserialize of model for passport session support
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.get("/",(req,res)=>{
     res.send("Hello,I am root") ;
@@ -62,6 +72,17 @@ app.use((req,res,next)=>{
     // console.log(res.locals.success); this will give empty array hence in flash ejs just if(success) is not enough and we use if(success && success.length)
     next();
 });
+
+
+app.get("/demouser" , async (req,res)=>{
+    let fakeUser = new User({
+        email: "student@gmail.com" , 
+        username: "delta-student",
+    });
+
+    let registeredUser = await User.register(fakeUser,"helloWorld");
+    res.send(registeredUser);
+})
 
 
 // listings router used
