@@ -24,6 +24,8 @@ router.get("/",async (req,res)=>{
 
 //New Route
 router.get("/new" , async (req,res)=>{
+    // console.log(req.user);
+    
     res.render("listings/new");
 });
 
