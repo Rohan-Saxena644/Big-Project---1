@@ -70,6 +70,7 @@ app.get("/",(req,res)=>{
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
+    res.locals.currUser = req.user;
     // console.log(res.locals.success); this will give empty array hence in flash ejs just if(success) is not enough and we use if(success && success.length)
     next();
 });
