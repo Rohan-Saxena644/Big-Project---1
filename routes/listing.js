@@ -16,7 +16,7 @@ router
 router.get("/new" , isLoggedIn , wrapAsync(listingController.renderNewForm));//It is defined here as the router.route can interpret our new as a id    
 
 
-router.route("/id")
+router.route("/:id")
     .get(wrapAsync(listingController.showListing))
     .put(isLoggedIn , isOwner , validateListing , wrapAsync(listingController.updateListing))
     .delete(isLoggedIn , isOwner , wrapAsync(listingController.destroyListing));
