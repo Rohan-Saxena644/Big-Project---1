@@ -8,7 +8,11 @@ const listingSchema = new Schema({
         required: true ,
     },
     description: String,
-    image:String,
+    image:{
+        url: String,
+        filename: String,
+    },
+
     //     // default:
     //     //     "https://i.pinimg.com/736x/b8/6b/17/b86b170e78a07c37e8001350c92123bb.jpg",
     //     // set: (v)=>
