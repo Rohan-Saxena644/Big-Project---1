@@ -21,26 +21,40 @@
         .filter p{
             font-size: 0.8rem;
         }
+
+        .tax-info{
+            display: none;
+        }
+
+        .tax-toggle{
+            border: 1px solid black;
+            border-radius: 1rem;
+            height: 3.5rem;
+            padding: 1rem;
+            margin-right: 3rem;
+            text-align: center;
+        }
     </style>
     
     <!-- <h3>ALL LISTINGS</h3> -->
     <!-- <form method="GET" action="/listings/new">
         <button>Create New listing</button>
     </form> -->
-
-<nav class="navbar navbar-expand-lg bg-white">
-  <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <div class="filters">
-                <div class="filter">
-                    <div><i class="fa-solid fa-fire"></i></div>
-                    <p>Trending</p>
-                </div>
+<div class="row">
+    <div class="col">
+        <nav class="navbar navbar-expand-lg bg-white">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <div class="filters">
+                                <div class="filter">
+                                <div><i class="fa-solid fa-fire"></i></div>
+                                <p>Trending</p>
+                            </div>
 
                 <div class="filter">
                     <div><i class="fa-solid fa-bed"></i></div>
@@ -88,18 +102,22 @@
     </div>
   </div>
 </nav>
+</div>
+    
 
 <br>
-    <div class="filters">
-        <div class="tax-toggle">
-            <div class="form-check-reverse form-switch">
+    <div class="col-auto">
+        <div class="tax-toggle mt-3">
+            <div class="form-check-reverse form-switch ">
                 <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
                 <label class="form-check-label" for="switchCheckDefault">Display Total After Taxes</label>
             </div>
         </div>
     </div>
 
-<br>    
+<br> 
+
+</div>   
 
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
 <% for(let listing of allListings){ %>
@@ -111,6 +129,7 @@
                 <p class="card-text">
                     <b><%= listing.title %></b> <br>
                     <%= listing.price.toLocaleString("en-IN") %> /night
+                    <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
                 </p>
             </div>
         </div>
@@ -129,6 +148,14 @@
 <script>
     let taxSwitch = document.getElementById("switchCheckDefault");
     taxSwitch.addEventListener("click",()=>{
-        console.log("clicked!");
+        let taxInfo = document.getElementsByClassName("tax-info");
+        for(info of taxInfo){
+            if(info.style.display != "inline"){
+                info.style.display = "inline";
+            }else{
+                info.style.display = "none";
+            }
+
+        }
     });
 </script>
