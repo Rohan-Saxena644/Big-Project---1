@@ -47,7 +47,12 @@ const listingSchema = new Schema({
             type: [Number],
             required: true
         }   
-    }
+    },
+
+    // category:{
+    //     type: String,
+    //     enum: ["mountains","arctic","farms","deserts"]
+    // } If you ever wanna implement the filter option to the listing also during creating a new listing you will need to add a category there as well
 }) ;
 
 listingSchema.post("findOneAndDelete", async(listing)=>{
