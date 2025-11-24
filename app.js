@@ -1,6 +1,5 @@
-if(process.env.NODE_ENV != "production"){
     require('dotenv').config();
-}
+
 
 const express = require("express");
 const app = express();
@@ -14,13 +13,15 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+const MongoStore = require('connect-mongo');
 
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust" ;
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust" ;
+const dburl = process.env.ATLASDB_URL;
 
 main()
     .then(()=>{
@@ -30,7 +31,7 @@ main()
     }) ;
 
 async function main(){
-    await mongoose.connect(MONGO_URL) ;
+    await mongoose.connect(dburl) ;
 }
 
 app.set("view engine","ejs") ;
@@ -41,15 +42,29 @@ app.engine('ejs',ejsMate);
 app.use(express.static(path.join(__dirname,"public")));
 
 
+const store = MongoStore.create({ 
+    mongoUrl: dburl, 
+    // crypto: {
+    //     secret: "mysupersecretcode"
+    // },
+    // touchAfter: 24*3600,
+});
+
+store.on("error",(err)=>{
+    console.log("Error in MONGO SESSION STORE",err);
+});
+
+
 const sessionOptions = {
+    store,
     secret: "mysupersecretcode",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000 ,
-        maxAge: 7 * 24 * 60 * 60 * 1000, 
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true, 
     },
-    httpOnly: true,
 };
 
 app.use(session(sessionOptions));
@@ -72,9 +87,9 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.use((req,res,next)=>{
-    res.locals.success = req.flash("success");
-    res.locals.error = req.flash("error");
-    res.locals.currUser = req.user;
+    res.locals.success = req.flash("success")||[];
+    res.locals.error = req.flash("error")||[];
+    res.locals.currUser = req.user||null;
     // console.log(res.locals.success); this will give empty array hence in flash ejs just if(success) is not enough and we use if(success && success.length)
     next();
 });
