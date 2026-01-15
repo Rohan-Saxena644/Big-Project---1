@@ -20,8 +20,8 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust" ;
-const dburl = process.env.ATLASDB_URL;
+const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust" ;
+// const dburl = process.env.ATLASDB_URL; // CHANGING THE UI TO REACT
 
 main()
     .then(()=>{
@@ -31,32 +31,34 @@ main()
     }) ;
 
 async function main(){
-    await mongoose.connect(dburl) ;
+    // await mongoose.connect(dburl) ;
+    await mongoose.connect(MONGO_URL) ;
 }
 
 app.set("view engine","ejs") ;
 app.set("views", path.join(__dirname,"views")) ;
 app.use(express.urlencoded({extended: true})) ;
+app.use(express.json()); // NEW THING ADDED WHILE IMPLEMENTING REACT
 app.use(methodOverride("_method"));
 app.engine('ejs',ejsMate);
 app.use(express.static(path.join(__dirname,"public")));
 
 
-const store = MongoStore.create({ 
-    mongoUrl: dburl, 
-    // crypto: {
-    //     secret: "mysupersecretcode"
-    // },
-    // touchAfter: 24*3600,
-});
+// const store = MongoStore.create({ 
+//     mongoUrl: dburl, 
+//     // crypto: {
+//     //     secret: "mysupersecretcode"
+//     // },
+//     // touchAfter: 24*3600,
+// });
 
-store.on("error",(err)=>{
-    console.log("Error in MONGO SESSION STORE",err);
-});
+// store.on("error",(err)=>{
+//     console.log("Error in MONGO SESSION STORE",err);
+// });
 
 
 const sessionOptions = {
-    store,
+    // store,
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
